@@ -1,0 +1,45 @@
+$black-rgba: rgba(30,32,25,.6);
+.bbcw-exhibit-item{
+	background-color: #ede9e7;
+    //width: 180px;
+    //height: 180px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+	float:left;
+	margin:12px;
+	position:relative;
+	&:hover{
+		.bbcw-exhibit-item-caption{
+			display:block;
+			position:absolute;
+			height:45%;
+			bottom:0;
+			overflow:hidden;
+			background-color:black;
+			background-color:$black-rgba;
+			font-size:65%;
+			color:white;
+			padding:5px;
+		}
+	}
+	.bbcw-exhibit-item-caption{
+		display:none;
+		
+	}
+}
+
+
+
+.bbcw-exhibit-curator{
+	color:gray;
+	font-size:.8em;
+	
+}
+
+//do not nest CSS inside this in case they used a custom selector
+
+#bbcw_exhibit_row{
+	width:100%;
+}

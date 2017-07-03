@@ -30,18 +30,58 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+$cotw_exhibitor_plugin_version='0.1';
+
 add_shortcode( 'BBCW-Virtual-Exhibit','bbcw_virtual_exhibit_shortcode_handler' );
 
 function bbcw_virtual_exhibit_shortcode_handler( $atts, $content = null ) {
     $a = shortcode_atts( array(
-        'attr_1' => 'attribute 1 default',
-        'attr_2' => 'attribute 2 default',
-        // ...etc
+		//magical hats
+        'id' => 20,
+        'layout' => 'grid',
+		//if they want to style the whole thing themselves
+        'load_css'=>1,
+		//override and use any selector they want
+		'selector'=>'#bbcw_exhibit_row',
+		//does nothing yet
+		'tile_size'=>180,
+		'show_title'=>1,
+		//if this value is set, the exhibit ID will be ignored and the loves for this username instead
+		'love_handle'=>false
     ), $atts );
+	if ($a['load_css']==1) wp_enqueue_style( 'bbcw-virtual-exhibitor-stylesheet' );
+	if ($a['show_title']==1) $display_title='true';
+	else $display_title='false';
+	//do some basic error checking
+	$error=false;
+	if (intval($a['tile_size'])<=0) $error.='tile_size parse error';
+
+	//if (
+		echo '<pre>',print_r(intval($a['tile_size']),1),'</pre>';
+	ob_start();
+	?>
+	<style>
+	.bbcw-exhibit-item{
+		height: <?=intval($a['tile_size'])?>px;
+		width: <?=intval($a['tile_size'])?>px;
+	}
+	</style>
+	<script>
+	jQuery(document).ready(function(){
+		bbcwLoadVirtualExhibit(<?=$a['id']?>,'<?=$a['selector']?>',<?=$display_title?>);
+	});
+	</script>
+	<?php if ($error) echo '<p style="color:red">'.$error.'</p>'; ?>
+	<?php if ($a['layout']=='grid'):?>
 	
-	echo '<pre>',print_r($atts,1),'</pre>';
-	echo 'hey';
+	<div id="bbcw_exhibit_row">
+	
+	</div>
+	<?php endif //grid layout ?>
+	<?php
+	return ob_get_clean();
 }
+
 
 //remember this
 /*
@@ -54,10 +94,10 @@ function my_shortcode() {
 
 //very helpful, shows how to add jquery dependency
 //https://code.tutsplus.com/articles/how-to-include-javascript-and-css-in-your-wordpress-themes-and-plugins--wp-24321
-add_action( 'wp_enqueue_scripts', 'custom_load_custom_style_sheet',100 );
-function custom_load_custom_style_sheet() {
+add_action( 'wp_enqueue_scripts', 'bbcw_exhibitor_load_scripts',100 );
+function bbcw_exhibitor_load_scripts() {
 //the last number is the version, increment up when changes are made, the third array is dependencies
-//this stylesheet loads after genesis and infinity pro
-	wp_enqueue_style( 'bbcw-virtual-exhibitor-stylesheet', plugins_url('/css/bbcw-virtual-exhibitor.css',__FILE__), array(), $GLOBALS['rr_custom_plugin_version'] );
-	wp_enqueue_script( 'bootstrap', plugins_url('/js/bootstrap.min.js',__FILE__), array( 'jquery' ), $GLOBALS['rr_custom_plugin_version'], true );
+	wp_enqueue_script( 'bbcw-virtual-exhibitor-script', plugins_url('/js/bbcw-virtual-exhibitor-script.js',__FILE__), array( 'jquery' ), $GLOBALS['cotw_exhibitor_plugin_version'], true );
+	//register rather than enqueue the style so it can be called on demand
+	wp_register_style( 'bbcw-virtual-exhibitor-stylesheet', plugins_url('/css/bbcw-virtual-exhibitor.min.css',__FILE__), array(), $GLOBALS['cotw_exhibitor_plugin_version'] );
 }

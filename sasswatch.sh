@@ -1,2 +1,1 @@
-#sass --watch public/css/sass/bbcw-virtual-exhibitor.scss:public/css/bbcw-virtual-exhibitor.css --style compressed
-sass --watch public/css/sass/bbcw-virtual-exhibitor.scss:public/css/bbcw-virtual-exhibitor.css
+sass --watch css/sass/bbcw-virtual-exhibitor.scss:css/bbcw-virtual-exhibitor.min.css --style compressed
