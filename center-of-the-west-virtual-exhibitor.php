@@ -21,7 +21,7 @@
  * Author URI:        https://centerofthewest.org/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       plugin-name
+ * Text Domain:       center-of-the-west-virtual-exhibitor
  * Domain Path:       /languages
  */
 
@@ -46,8 +46,10 @@ function bbcw_virtual_exhibit_shortcode_handler( $atts, $content = null ) {
 		//does nothing yet
 		'tile_size'=>180,
 		'show_title'=>1,
+		'background_color'=>'#ede9e7',
 		//if this value is set, the exhibit ID will be ignored and the loves for this username instead
-		'love_handle'=>false
+		'love_handle'=>false,
+		'limit'=>25
     ), $atts );
 	if ($a['load_css']==1) wp_enqueue_style( 'bbcw-virtual-exhibitor-stylesheet' );
 	if ($a['show_title']==1) $display_title='true';
@@ -55,7 +57,8 @@ function bbcw_virtual_exhibit_shortcode_handler( $atts, $content = null ) {
 	//do some basic error checking
 	$error=false;
 	if (intval($a['tile_size'])<=0) $error.='tile_size parse error';
-
+	if (intval($a['limit'])>100 || intval($a['limit'])<1) $limit=25;
+	else $limit=intval($a['limit']);
 	//if (
 		echo '<pre>',print_r(intval($a['tile_size']),1),'</pre>';
 	ob_start();
@@ -64,14 +67,19 @@ function bbcw_virtual_exhibit_shortcode_handler( $atts, $content = null ) {
 	.bbcw-exhibit-item{
 		height: <?=intval($a['tile_size'])?>px;
 		width: <?=intval($a['tile_size'])?>px;
+		background-color: <?=$a['background_color']?>;
 	}
 	</style>
 	<script>
 	jQuery(document).ready(function(){
-		bbcwLoadVirtualExhibit(<?=$a['id']?>,'<?=$a['selector']?>',<?=$display_title?>);
+		<?php if ($a['love_handle']): ?>
+		bbcwLoadLovesList('<?=$a['love_handle']?>','<?=$a['selector']?>',<?=$display_title?>,<?=$limit?>);
+		<?php else: ?>
+		bbcwLoadVirtualExhibit(<?=$a['id']?>,'<?=$a['selector']?>',<?=$display_title?>,<?=$limit?>);
+		<?php endif; ?>
 	});
 	</script>
-	<?php if ($error) echo '<p style="color:red">'.$error.'</p>'; ?>
+	<?php if ($error) echo '<p class="bbcw-exhibit-error">'.$error.'</p>'; ?>
 	<?php if ($a['layout']=='grid'):?>
 	
 	<div id="bbcw_exhibit_row">

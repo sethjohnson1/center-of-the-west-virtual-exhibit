@@ -1,6 +1,13 @@
 $black-rgba: rgba(30,32,25,.6);
+$red: #981e32;
+$tan: #aa9c8f;
+@keyframes caption {
+    from {height:0%;}
+    to {height:45%;}
+}
+
 .bbcw-exhibit-item{
-	background-color: #ede9e7;
+	//background-color: #ede9e7;
     //width: 180px;
     //height: 180px;
     background-size: contain;
@@ -22,10 +29,13 @@ $black-rgba: rgba(30,32,25,.6);
 			font-size:65%;
 			color:white;
 			padding:5px;
+			animation-name: caption;
+			animation-duration: 1s;
 		}
 	}
 	.bbcw-exhibit-item-caption{
 		display:none;
+		width:100%;
 		
 	}
 }
@@ -42,4 +52,18 @@ $black-rgba: rgba(30,32,25,.6);
 
 #bbcw_exhibit_row{
 	width:100%;
+}
+
+.bbcw-exhibit-footer{
+	p{
+		text-align:center;
+		font-size: .7em;
+	}
+}
+
+.bbcw-exhibit-error{
+	color: lighten($red,20%);
+	border:1px solid $tan;
+	border-left:5px solid lighten($red,20%);
+	padding:10px;
 }
