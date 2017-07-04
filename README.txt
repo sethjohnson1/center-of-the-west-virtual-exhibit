@@ -27,7 +27,8 @@ This simple plugin adds a shortcode to embed Virtual Exhibits from the Buffalo B
 
 -- Options --
 1. `id` put the id of the Virtual Exhibit you want to embed
-1. `love_handle` this *supersedes* `id` and will display the list of loved items for the username supplied. For example `https://collections.centerofthewest.org/loved/sj3` the handle would be `sj3`
+1. `love_handle` this *supersedes* `id` and will display the list of loved items for the username supplied. For example `https://collections.centerofthewest.org/loved/sj3` the love_handle would be `sj3`
+1. `layout` defaults to `grid`. Try `list` for a full-width list style.
 1. `tile_size` defaults to `180`. The size, in pixels, that you want the items to be.
 1. `margin` defaults to `12`. The margin around each item in pixels.
 1. `show_title` defaults to `1`. Set this to ANYTHING other than `1` and the title will not display.
@@ -39,7 +40,7 @@ This simple plugin adds a shortcode to embed Virtual Exhibits from the Buffalo B
 1. `method` defaults to `append`. Use `replace` will overwrite the contents of the selector rather than appending.
 1. `load_css` defaults to `1`. Use this only if you want to prevent the default CSS stylesheet from loading. Set to any value other than 1.
 1. `debug` defaults to `false`. Set this to any value to have the shortcode options displayed.
-1. Example with most options: `[BBCW-Virtual-Exhibit love_handle=sj3 tile_size=100 margin=5 show_title=0 background_color=green limit=3 new_window=1 show_footer=1 selector=.]
+1. Example with most options: `[BBCW-Virtual-Exhibit love_handle=sj3 tile_size=100 margin=5 show_title=0 background_color=green limit=3 new_window=1 show_footer=1 selector=#recent-posts-2 method=replace]`
 
 
 -- Notes --

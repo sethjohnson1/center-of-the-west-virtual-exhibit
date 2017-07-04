@@ -90,31 +90,51 @@ function bbcw_virtual_exhibit_shortcode_handler( $atts, $content = null ) {
 		$method='append';
 	}
 	else $method=$a['method'];
+	
+	if ($a['layout']!='grid' && $a['layout']!='list'){
+		$error.=' invalid value for layout ';
+		$layout='grid';
+	}
+	else $layout=$a['layout'];
 
 	ob_start();
 	?>
 	<style>
+	<?php //if ($a['layout']=='grid'):?>
 	.bbcw-exhibit-item{
 		height: <?=intval($a['tile_size'])?>px;
 		width: <?=intval($a['tile_size'])?>px;
 		background-color: <?=$a['background_color']?>;
 		margin: <?=$a['margin']?>px;
 	}
+	<?php //endif ?>
+	<?php if ($a['layout']=='list'):?>
+	.bbcw-exhibit-link{
+		min-height: <?=intval($a['tile_size'])+($a['margin']*2)?>px;
+		height:auto;
+	}
+	.bbcw-exhibit-item-container.bbcw-exhibit-list {
+		margin:<?=intval($a['margin'])?>px;
+	}
+	.bbcw-exhibit-item-caption.bbcw-exhibit-list>p{
+		padding:<?=intval($a['margin'])?>px;
+	}
+	<?php endif ?>
 	</style>
 	<script>
-	//loadVirtual exhibit params: id/handle, type, selector,limit,title(bool),footer(bool),target(bool),method
+	//loadVirtual exhibit params: id/handle, type, layout, selector,limit,title(bool),footer(bool),target(bool),method
 	jQuery(document).ready(function(){
-		bbcwLoadVirtualExhibit('<?=$id?>','<?=$type?>','<?=$a['selector']?>',<?=intval($a['limit'])?>,<?=$display_title?>,<?=$footer?>,<?=$target?>,'<?=$method?>');
+		bbcwLoadVirtualExhibit('<?=$id?>','<?=$type?>','<?=$layout?>','<?=$a['selector']?>',<?=intval($a['limit'])?>,<?=$display_title?>,<?=$footer?>,<?=$target?>,'<?=$method?>');
 
 	});
 	</script>
 	<?php if ($error) echo '<p class="bbcw-exhibit-error">'.$error.'</p>'; ?>
-	<?php if ($a['layout']=='grid'):?>
+	<?php // if ($a['layout']=='grid'):?>
 	
 	<div id="bbcw_exhibit_row">
 	
 	</div>
-	<?php endif //grid layout ?>
+	<?php  // endif //grid layout ?>
 	<?php
 	return ob_get_clean();
 }

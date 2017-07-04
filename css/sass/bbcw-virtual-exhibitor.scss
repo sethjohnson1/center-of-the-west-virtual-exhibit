@@ -14,28 +14,69 @@ $tan: #aa9c8f;
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-	float:left;
-	position:relative;
-	&:hover{
-		.bbcw-exhibit-item-caption{
-			display:block;
-			position:absolute;
-			height:45%;
-			bottom:0;
-			overflow:hidden;
-			background-color:black;
-			background-color:$black-rgba;
-			font-size:65%;
-			color:white;
-			padding:5px;
-			animation-name: caption;
-			animation-duration: 1s;
+	&.bbcw-exhibit-grid{
+		float:left;
+		position:relative;
+		
+		&:hover{
+			.bbcw-exhibit-item-caption{
+				
+				display:block;
+				position:absolute;
+				height:45%;
+				bottom:0;
+				overflow:hidden;
+				background-color:black;
+				background-color:$black-rgba;
+				font-size:65%;
+				color:white;
+				padding:5px;
+				animation-name: caption;
+				animation-duration: 1s;
+			}
 		}
 	}
-	.bbcw-exhibit-item-caption{
-		display:none;
-		width:100%;
+	
+	&.bbcw-exhibit-list{
+		float:left;
+	}
+	
+	.bbcw-exhibit-item-caption { 
+		&.bbcw-exhibit-grid{
+			display:none;
+			width:100%;
+		}
 		
+	}
+}
+//only applies to list anyway (since with grid the div is inside)
+.bbcw-exhibit-item-caption { 
+	&.bbcw-exhibit-list{
+			//:107%;
+			//border:1px solid black;
+		}
+}
+.bbcw-exhibit-item-container{
+	&.bbcw-exhibit-list{
+		//border:1px solid black;
+	}
+}
+
+a.bbcw-exhibit-list{
+	box-shadow: none;
+	&:hover{
+		//color:inherit;
+		box-shadow: none;
+	}
+}
+
+.bbcw-exhibit-link{
+	&.bbcw-exhibit-list{
+		clear:both;
+		display:block;
+		&:hover{
+			box-shadow:1px 1px 10px $tan;
+		}
 	}
 }
 
@@ -44,7 +85,6 @@ $tan: #aa9c8f;
 .bbcw-exhibit-curator{
 	color:gray;
 	font-size:.8em;
-	
 }
 
 //do not nest CSS inside this in case they used a custom selector
