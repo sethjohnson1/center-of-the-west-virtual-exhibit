@@ -45,22 +45,52 @@ function bbcw_virtual_exhibit_shortcode_handler( $atts, $content = null ) {
 		'selector'=>'#bbcw_exhibit_row',
 		//does nothing yet
 		'tile_size'=>180,
+		'margin'=>12,
 		'show_title'=>1,
 		'background_color'=>'#ede9e7',
 		//if this value is set, the exhibit ID will be ignored and the loves for this username instead
 		'love_handle'=>false,
-		'limit'=>25
+		'limit'=>25,
+		'show_footer'=>false,
+		'new_window'=>false,
+		'method'=>'append',
+		'debug'=>false
     ), $atts );
+	
+	if ($a['debug'] && $a['debug'] != 'false') echo '<h3>Before</h3><pre>',print_r($a,1),'</pre>';
+	
 	if ($a['load_css']==1) wp_enqueue_style( 'bbcw-virtual-exhibitor-stylesheet' );
 	if ($a['show_title']==1) $display_title='true';
 	else $display_title='false';
 	//do some basic error checking
 	$error=false;
-	if (intval($a['tile_size'])<=0) $error.='tile_size parse error';
-	if (intval($a['limit'])>100 || intval($a['limit'])<1) $limit=25;
-	else $limit=intval($a['limit']);
-	//if (
-		echo '<pre>',print_r(intval($a['tile_size']),1),'</pre>';
+	if (intval($a['tile_size'])<=0){
+		$error.=' tile_size parse error ';
+		$a['tile_size']=180;
+	}
+	if (intval($a['margin'])<=0){
+		$error.=' margin parse error ';
+		$a['margin']=12;
+	}
+	if (intval($a['limit'])>100 || intval($a['limit'])<1) $a['limit']=25;
+	if ($a['show_footer']) $footer='true';
+	else $footer='false';
+	if ($a['new_window']) $target='true';
+	else $target='false';
+	if ($a['love_handle']){
+		$type='loved';
+		$id=$a['love_handle'];
+	}
+	else {
+		$type='exhibit';
+		$id=$a['id'];
+	}
+	if ($a['method']!='replace' && $a['method']!='append'){
+		$error.=' invalid value for method ';
+		$method='append';
+	}
+	else $method=$a['method'];
+
 	ob_start();
 	?>
 	<style>
@@ -68,15 +98,14 @@ function bbcw_virtual_exhibit_shortcode_handler( $atts, $content = null ) {
 		height: <?=intval($a['tile_size'])?>px;
 		width: <?=intval($a['tile_size'])?>px;
 		background-color: <?=$a['background_color']?>;
+		margin: <?=$a['margin']?>px;
 	}
 	</style>
 	<script>
+	//loadVirtual exhibit params: id/handle, type, selector,limit,title(bool),footer(bool),target(bool),method
 	jQuery(document).ready(function(){
-		<?php if ($a['love_handle']): ?>
-		bbcwLoadLovesList('<?=$a['love_handle']?>','<?=$a['selector']?>',<?=$display_title?>,<?=$limit?>);
-		<?php else: ?>
-		bbcwLoadVirtualExhibit(<?=$a['id']?>,'<?=$a['selector']?>',<?=$display_title?>,<?=$limit?>);
-		<?php endif; ?>
+		bbcwLoadVirtualExhibit('<?=$id?>','<?=$type?>','<?=$a['selector']?>',<?=intval($a['limit'])?>,<?=$display_title?>,<?=$footer?>,<?=$target?>,'<?=$method?>');
+
 	});
 	</script>
 	<?php if ($error) echo '<p class="bbcw-exhibit-error">'.$error.'</p>'; ?>

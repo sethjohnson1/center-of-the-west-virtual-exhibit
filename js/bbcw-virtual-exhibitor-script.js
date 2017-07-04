@@ -1,36 +1,27 @@
-function bbcwLoadVirtualExhibit(id,selector,show_title,limit){
-
+/* 
+id/handle, type, selector,limit,title(bool),footer(bool),target(bool),method(append or replace)
+the integer parsing was dealt with PHP before, so we'll trust it
+*/
+function bbcwLoadVirtualExhibit(id,type,selector,limit,show_title,footer,target,method){
+	var collectionsURL;
+	if (type=='loved') collectionsURL="https://collections.centerofthewest.org/loved/"+id+".json?limit="+limit;
+	else collectionsURL="https://collections.centerofthewest.org/exhibit/"+id+".json?limit="+limit;
+	
 	jQuery.ajax({
 		async:true,
 		dataType:"json",
 		success:function (data) {
-			bbcwWriteJSONData(data,selector,show_title,id,'exhibit');
+			bbcwWriteJSONData(id,type,selector,show_title,footer,target,data,method);
 		},
 		error:function(){
-			jQuery(selector).append('<p class="bbcw-exhibit-error">Error fetching virtual exhibit '+id+'. Please check the number and try again.</p>');
+			jQuery(selector).append('<p class="bbcw-exhibit-error">Error fetching '+type+' data for '+id+'. Please check the number and try again.</p>');
 		},
 		type:"GET",
-		url: "https://collections.centerofthewest.org/exhibit/"+id+".json?limit="+limit
+		url: collectionsURL
 		});
 		
 }
 
-function bbcwLoadLovesList(handle,selector,show_title,limit){
-
-	jQuery.ajax({
-		async:true,
-		dataType:"json",
-		success:function (data) {
-			bbcwWriteJSONData(data,selector,show_title,handle,'loved');
-		},
-		error:function(){
-			jQuery(selector).append('<p class="bbcw-exhibit-error">Error fetching virtual exhibit '+id+'. Please check the number and try again.</p>');
-		},
-		type:"GET",
-		url: "https://collections.centerofthewest.org/loved/"+handle+".json?limit="+limit
-		});
-		
-}
 
 //thank you StackOverflow!
 function truncate( n, useWordBoundary ){
@@ -41,8 +32,10 @@ function truncate( n, useWordBoundary ){
        : subString) + "&hellip;";
 };
 
-function bbcwWriteJSONData(data,selector,show_title,id,type){
+function bbcwWriteJSONData(id,type,selector,show_title,footer,target,data,method){
 	//console.log(data.exhibit);
+	var new_window='';
+	if (target) new_window=' target="_blank" ';
 	var html='';
 	if (data.exhibit){
 		if (show_title){
@@ -57,7 +50,9 @@ function bbcwWriteJSONData(data,selector,show_title,id,type){
 			}
 		}
 	}
-	jQuery(selector).append(html);
+	console.log(method);
+	if (method=='replace'){ jQuery(selector).html(html); console.log('hi');}
+	else jQuery(selector).append(html);
 	var maxOffset=data.treasures.length-1;
 	for (var i = 0; i < data.treasures.length; i++) {
 		var comment='';
@@ -80,13 +75,15 @@ function bbcwWriteJSONData(data,selector,show_title,id,type){
 		//not using this one yet
 		img_full='https://cdn.bbcw.org/collection_images/1/'+img;
 		//console.log(img_zm);
-		html=html+'<a href="https://collections.centerofthewest.org/view/'+data.treasures[i].slug+'?offset='+i+'&maxOffset='+maxOffset+'&'+type+'='+id+'">';
+		html=html+'<a '+new_window+'href="https://collections.centerofthewest.org/view/'+data.treasures[i].slug+'?offset='+i+'&maxOffset='+maxOffset+'&'+type+'='+id+'">';
 		html=html+'<div class="bbcw-exhibit-item" style="background-image: url(\''+img_zm+'\')">';
 		html=html+'<div class="bbcw-exhibit-item-caption"><p>'+comment+'</p></div>';
 		html=html+'</div></a><!-- bbcw-exhibit-item -->';
 		jQuery(selector).append(html);
 	}
 	jQuery(selector).append('<div style="clear:both"></div>');
-	jQuery(selector).append('<div class="bbcw-exhibit-footer"><p>Virtual Exhibit courtesy of <a href="https://collections.centerofthewest.org">https://collections.centerofthewest.org</a></p></div>');
+	if (footer){
+		jQuery(selector).append('<div class="bbcw-exhibit-footer"><p>Find something to love at <a href="https://collections.centerofthewest.org">https://collections.centerofthewest.org</a></p></div>');
+	}
 	
 }
